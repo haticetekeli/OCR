@@ -35,7 +35,7 @@ Bu proje, görüntülerden metin çıkarmak için Python ile geliştirilmiş bas
 
 4. `ocr_app.py` dosyasında Tesseract yolunu kontrol edin:
    ```python
-   pytesseract.pytesseract.tesseract_cmd = r'C:\Users\guvnr\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+   pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
    ```
    Eğer Tesseract farklı bir konuma kurulduysa, bu yolu değiştirin.
 

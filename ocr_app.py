@@ -13,8 +13,8 @@ import numpy as np
 import pytesseract
 from PIL import Image
 
-# Windows için Tesseract yolunu ayarlayın
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\guvnr\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+# Windows için Tesseract yolunu ayarlayın (Kurulumdan sonra bu yolu kontrol edin)
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 class OCRUygulamasi:
     """OCR işlemlerini gerçekleştiren sınıf."""
