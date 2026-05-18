@@ -1,0 +1,19 @@
+--- DIALOGUE 1: WRONG TELEPHONE MANNERS ---
+Secretary: Hello I am Sema. Who are you?
+Müşteri: This is Ahmet the Engineer.
+Müşteri: I would like to speak to Mr. Şevket Yılmaz.
+Secretary: He is outside, call him later.
+Müşteri: What time can I call back?
+Secretary: I don't know.
+Müşteri: You are very rude. Goodbye!
+
+--- DIALOGUE 2: CORRECT TELEPHONE MANNERS ---
+Secretary: Good morning, Somuncu company. How can I help you?
+Müşteri: This is Mr. Mücahit Okçu. I want to speak to Mr. Hakan Şam.
+Secretary: Mr. Hakan Şam. Just a moment, let me connect.
+Müşteri: Thank you. Goodbye.
+
+--- DIALOGUE 3: ANOTHER EXAMPLE (MEETING DIALOGUE) ---
+Müşteri: This is Mr. Bülent. I would like to speak to Mr. Sinan Cebeci.
+Secretary: Mr. Cebeci is at the meeting now, I don't know what time he will be back. Should I ask him to call you?
+Müşteri: Okay, goodbye.
