@@ -13,7 +13,6 @@ import numpy as np
 import pytesseract
 from PIL import Image
 
-# Windows için Tesseract yolunu ayarlayın (Kurulumdan sonra bu yolu kontrol edin)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 class OCRUygulamasi:
@@ -78,7 +77,7 @@ class OCRUygulamasi:
         if on_isleme_uygula:
             goruntu = self.on_isleme(goruntu)
         
-        # Tesseract OCR ile metin çıkarma
+    
         metin = pytesseract.image_to_string(goruntu, lang=self.dil)
         
         return metin
