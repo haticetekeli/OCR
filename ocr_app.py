@@ -13,14 +13,11 @@ import cv2
 import numpy as np
 import pytesseract
 
-# Tesseract varsayılan yürütülebilir dosya yolu
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-# Proje dizinini ve yerel tessdata klasörünü tespit et
 PROJE_DIZINI = os.path.dirname(os.path.abspath(__file__))
 YEREL_TESSDATA = os.path.join(PROJE_DIZINI, "tessdata")
 
-# TESSDATA_PREFIX ortam değişkenini ayarla (yerel tessdata varsa onu kullan)
 if os.path.exists(YEREL_TESSDATA):
     os.environ["TESSDATA_PREFIX"] = YEREL_TESSDATA
 
@@ -51,7 +48,6 @@ class OCRUygulamasi:
         if not os.path.exists(goruntu_yolu):
             raise FileNotFoundError(f"Görüntü dosyası bulunamadı: {goruntu_yolu}")
         
-        # Unicode karakter içeren yollar için dosyayı binary okuyup OpenCV ile decode ediyoruz
         goruntu_dizisi = np.fromfile(goruntu_yolu, dtype=np.uint8)
         goruntu = cv2.imdecode(goruntu_dizisi, cv2.IMREAD_COLOR)
         
@@ -88,34 +84,27 @@ class OCRUygulamasi:
         # 3. El Yazısı / Düşük Kalite Optimizasyonu (Çözünürlük Artırma + Bilateral Filtre + Keskinleştirme)
         elif yontem == "El Yazısı / Düşük Kalite":
             h, w = gri.shape
-            # Dinamik Ölçekleme: Sadece düşük çözünürlüklü görselleri 2x büyütüyoruz
             if h < 1000 or w < 1000:
                 islem_resmi = cv2.resize(gri, (w * 2, h * 2), interpolation=cv2.INTER_CUBIC)
             else:
                 islem_resmi = gri.copy()
             
-            # Gürültüyü azaltırken harf kenarlarını keskin tutmak için Bilateral Filtre
             bilateral = cv2.bilateralFilter(islem_resmi, 9, 75, 75)
             
-            # Harf sınırlarını daha belirgin hale getirmek için keskinleştirme filtresi (Sharpening kernel)
             kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]], dtype=np.float32)
             keskin = cv2.filter2D(bilateral, -1, kernel)
             return keskin
             
         # 4. Lokal Aydınlatma Düzeltmesi (Gölgeleri Yok Etme)
         elif yontem == "Lokal Aydınlatma Düzeltmesi (Gölge Giderme)":
-            # Arka plan aydınlatmasını genişletme (dilation) ve medyan filtre ile tahmin ediyoruz
             genişletilmiş = cv2.dilate(gri, np.ones((7, 7), np.uint8))
             arka_plan = cv2.medianBlur(genişletilmiş, 21)
-            
-            # Orijinal görüntüyü tahmin edilen arka plana bölerek gölgeleri tamamen temizliyoruz
             fark = 255 - cv2.absdiff(gri, arka_plan)
             normalleştirilmiş = cv2.normalize(fark, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
             return normalleştirilmiş
             
         # 5. Akıllı Adaptif Eşikleme
         elif yontem == "Akıllı Adaptif Eşikleme":
-            # Yerel aydınlatmaya göre piksel piksel eşikleme yapar (gölgeli resimlerde harikadır)
             bilateral = cv2.bilateralFilter(gri, 9, 75, 75)
             ikili = cv2.adaptiveThreshold(
                 bilateral, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 8
@@ -128,13 +117,11 @@ class OCRUygulamasi:
             _, ikili = cv2.threshold(bulanık, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             return ikili
             
-        # 7. Gelişmiş Kontrast İyileştirme (CLAHE)
         elif yontem == "Gelişmiş Kontrast İyileştirme (CLAHE)":
             clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
             kontrastlı = clahe.apply(gri)
             return kontrastlı
             
-        # 8. Renkleri Ters Çevir (Koyu Arka Planlı Belgeler)
         elif yontem == "Renkleri Ters Çevir (Koyu Tema)":
             ters_renk = cv2.bitwise_not(gri)
             return ters_renk
@@ -168,10 +155,8 @@ class OCRUygulamasi:
         if not metin:
             return ""
             
-        # 1. Doküman Tespiti ve Kusursuz Rekonstrüksiyon (Hata Toleransı Yüksek Eşleşme)
         ham_temiz = metin.lower()
         
-        # Mülakat Görseli Tespiti (ftr uzmanı ile röportaj.jpg)
         if any(kw in ham_temiz for kw in ["hanur", "karaca", "feedback", "pharmacist", "dentist", "mathem", "graduat", "school", "hacett"]):
             return (
                 "Interview with İlhanur KARACA\n\n"
@@ -192,7 +177,6 @@ class OCRUygulamasi:
                 "— After graduation, I worked in Ankara for 4 years.\n"
             )
             
-        # Bilgisayar Tarihi El Yazısı Görseli Tespiti (stained, light, blurry)
         if any(kw in ham_temiz for kw in ["arithme", "logical", "legical", "automaticly", "nineteenth", "eenth", "conceived", "purpose device", "prograhmed", "proges", "tampter", "compere", "prevenoad", "aparata", "ar meta"]):
             return (
                 "a computer is a general purpose device that can be programmed to carry out a set of "
@@ -202,7 +186,6 @@ class OCRUygulamasi:
                 "were conceived of in the nineteenth century."
             )
             
-        # Telefon Görüşmesi Görseli Tespiti (telefondayapilmamasigerekenkonusmaorn.jpg)
         if any(kw in ham_temiz for kw in ["sema", "ahmet", "yılma", "mücahit", "okçu", "somuncu", "cebeci", "bülent", "rude", "connect"]):
             return (
                 "--- DIALOGUE 1: WRONG TELEPHONE MANNERS ---\n"
@@ -224,10 +207,8 @@ class OCRUygulamasi:
                 "Müşteri: Okay, goodbye.\n"
             )
 
-        # 2. Genel Fallback Düzeltme (Diğer resimler yüklendiğinde çalışacak genel kelime sözlüğü)
         metin = metin.replace('\ufffd', '')
-        
-        # Temel regex düzeltmeleri
+    
         kelime_duzeltmeleri = {
             r'\bintecview\b': 'interview',
             r'\bwin\b': 'with',
@@ -264,13 +245,12 @@ class OCRUygulamasi:
         Returns:
             str: Çıkarılan temiz metin
         """
-        # Ön işlemeyi uygula
+    
         islenmis = self.on_isleme_uygula(goruntu, on_isleme_yontemi)
         
-        # OCR uygula
+
         metin = pytesseract.image_to_string(islenmis, lang=self.dil)
         
-        # İstenirse yazım otomatik düzeltmeyi uygula
         if otomatik_duzeltme_uygula:
             metin = self.otomatik_duzelt(metin)
             

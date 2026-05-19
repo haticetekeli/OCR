@@ -40,7 +40,6 @@ class OCRGUIUygulamasi:
         self.goruntu = None
         self.islenmis_goruntu = None
         
-        # Tema ve Stil Ayrıntıları (Slate Dark Premium)
         self.stil_ayarla()
         self.arayuz_olustur()
         
@@ -49,7 +48,6 @@ class OCRGUIUygulamasi:
         self.style = ttk.Style()
         self.style.theme_use('clam')
         
-        # Renk Paleti (Catppuccin Slate Dark esintili)
         self.bg_color = "#1e1e2e"       # Ana arka plan
         self.card_color = "#252538"     # Panel arka planı
         self.fg_color = "#cdd6f4"       # Yazı rengi
@@ -57,18 +55,14 @@ class OCRGUIUygulamasi:
         self.accent_green = "#a6e3a1"   # Başarı yeşili
         self.border_color = "#45475a"   # İnce kenarlıklar
         
-        # Pencere rengi
         self.root.configure(bg=self.bg_color)
         
-        # Genel Bileşen Stilleri
         self.style.configure(".", background=self.bg_color, foreground=self.fg_color, font=("Segoe UI", 10))
         self.style.configure("TFrame", background=self.bg_color)
         
-        # LabelFrame Stilleri
         self.style.configure("TLabelframe", background=self.bg_color, bordercolor=self.border_color, borderwidth=1)
         self.style.configure("TLabelframe.Label", background=self.bg_color, foreground=self.accent_color, font=("Segoe UI", 10, "bold"))
         
-        # Buton Stilleri
         self.style.configure("TButton", background=self.card_color, foreground=self.fg_color, bordercolor=self.border_color, borderwidth=1, focuscolor=self.accent_color, padding=6)
         self.style.map("TButton",
             background=[("active", self.accent_color), ("pressed", "#74c7ec")],
@@ -81,17 +75,15 @@ class OCRGUIUygulamasi:
             foreground=[("active", "#1e1e2e")]
         )
         
-        # Combobox Stilleri
+
         self.style.configure("TCombobox", fieldbackground=self.card_color, background=self.card_color, foreground=self.fg_color, bordercolor=self.border_color, arrowcolor=self.fg_color)
         
-        # Checkbutton Stilleri
         self.style.configure("TCheckbutton", background=self.bg_color, foreground=self.fg_color, focuscolor="")
         self.style.map("TCheckbutton",
             indicatorcolor=[("selected", self.accent_green), ("!selected", self.card_color)],
             background=[("active", self.bg_color)]
         )
         
-        # Etiketler ve Durum Çubuğu
         self.style.configure("TLabel", background=self.bg_color, foreground=self.fg_color)
         self.style.configure("Title.TLabel", foreground=self.accent_color, font=("Segoe UI", 14, "bold"))
         self.style.configure("Status.TLabel", background=self.card_color, foreground=self.accent_green, font=("Segoe UI", 9, "italic"))
@@ -99,34 +91,28 @@ class OCRGUIUygulamasi:
     def arayuz_olustur(self):
         """GUI bileşenlerini oluşturur ve yerleştirir."""
         
-        # Ana Çerçeve
         ana_cerceve = ttk.Frame(self.root, padding="15")
         ana_cerceve.pack(fill=tk.BOTH, expand=True)
         
-        # ÜST BAŞLIK PANELİ
         ust_panel = ttk.Frame(ana_cerceve)
         ust_panel.pack(fill=tk.X, pady=(0, 10))
         
         title_label = ttk.Label(ust_panel, text="🎛️ BASİT OPTİK KARAKTER TANIMA (OCR) UYGULAMASI", style="Title.TLabel")
         title_label.pack(side=tk.LEFT)
         
-        # KONTROL VE AYAR PANELİ (Üst kart çerçeve)
         kontrol_cercevesi = ttk.LabelFrame(ana_cerceve, text=" OCR Kontrol ve Yapılandırma Paneli ", padding="10")
         kontrol_cercevesi.pack(fill=tk.X, pady=(0, 10))
         
-        # 1. Satır Kontrolleri
         kontrol_satir1 = ttk.Frame(kontrol_cercevesi)
         kontrol_satir1.pack(fill=tk.X, pady=5)
         
         ttk.Button(kontrol_satir1, text="📂 Görüntü Dosyası Seç", command=self.goruntu_sec, style="TButton").pack(side=tk.LEFT, padx=(0, 15))
         
-        # Dil Seçimi
         ttk.Label(kontrol_satir1, text="Dil Tanıma Paketi:").pack(side=tk.LEFT, padx=5)
         self.dil_secimi = ttk.Combobox(kontrol_satir1, values=["eng+tur", "tur", "eng", "deu", "fra", "spa"], width=10, state="readonly")
         self.dil_secimi.current(0)  # Varsayılan: eng+tur
         self.dil_secimi.pack(side=tk.LEFT, padx=(0, 15))
         
-        # Ön İşleme Yöntemi Seçimi
         ttk.Label(kontrol_satir1, text="Ön İşleme Modu:").pack(side=tk.LEFT, padx=5)
         self.yontem_secimi = ttk.Combobox(kontrol_satir1, values=[
             "El Yazısı / Düşük Kalite",
@@ -138,41 +124,35 @@ class OCRGUIUygulamasi:
             "Renkleri Ters Çevir (Koyu Tema)",
             "Orijinal"
         ], width=38, state="readonly")
-        self.yontem_secimi.current(0)  # Varsayılan: El Yazısı / Düşük Kalite
+        self.yontem_secimi.current(0)  
         self.yontem_secimi.pack(side=tk.LEFT, padx=(0, 15))
         
-        # 2. Satır Kontrolleri
         kontrol_satir2 = ttk.Frame(kontrol_cercevesi)
         kontrol_satir2.pack(fill=tk.X, pady=5)
         
-        # Otomatik Düzeltme Checkbox
         self.otomatik_duzelt_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(kontrol_satir2, text="Metin Hatalarını Akıllı Otomatik Düzelt", variable=self.otomatik_duzelt_var).pack(side=tk.LEFT, padx=(0, 20))
         
-        # Butonlar
         ttk.Button(kontrol_satir2, text="🔍 METNİ TANI VE ANALİZ ET", command=self.ocr_uygula, style="Accent.TButton").pack(side=tk.LEFT, padx=5)
         ttk.Button(kontrol_satir2, text="🧹 Arayüzü Temizle", command=self.temizle, style="TButton").pack(side=tk.RIGHT, padx=5)
         
-        # ORTA PANEL (Bölünmüş Görüntü ve Metin Alanı)
         orta_panel = ttk.PanedWindow(ana_cerceve, orient=tk.HORIZONTAL)
         orta_panel.pack(fill=tk.BOTH, expand=True, pady=5)
         
-        # Sol Panel: Görüntü Önizleme
+        # Sol Panel
         self.goruntu_cercevesi = ttk.LabelFrame(orta_panel, text=" Ön İşlenmiş / Orijinal Görüntü Önizleme ")
         orta_panel.add(self.goruntu_cercevesi, weight=1)
         
-        # Görüntü ve Başlıkları sarmalayan çerçeve
         self.resim_kapsayici = ttk.Frame(self.goruntu_cercevesi)
         self.resim_kapsayici.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
         self.goruntu_etiketi = ttk.Label(self.resim_kapsayici, anchor=tk.CENTER)
         self.goruntu_etiketi.pack(fill=tk.BOTH, expand=True)
         
-        # Sağ Panel: Tanınan Metin
+        # Sağ Panel
         metin_cercevesi = ttk.LabelFrame(orta_panel, text=" OCR Tarafından Tanınan ve Düzeltilen Metin ")
         orta_panel.add(metin_cercevesi, weight=1)
         
-        # Özelleştirilmiş ScrollText: VS Code tarzı koyu editör görünümü
         self.metin_alani = scrolledtext.ScrolledText(
             metin_cercevesi, wrap=tk.WORD, width=40, height=20,
             bg="#11111b", fg="#a6e3a1", insertbackground="#cdd6f4",
@@ -181,7 +161,6 @@ class OCRGUIUygulamasi:
         )
         self.metin_alani.pack(fill=tk.BOTH, expand=True, padx=8, pady=8)
         
-        # ALT DURUM ÇUBUĞU (Koyu gri kart tasarımı)
         durum_cercevesi = ttk.Frame(ana_cerceve, padding=(5, 2))
         durum_cercevesi.pack(fill=tk.X, side=tk.BOTTOM, pady=(5, 0))
         durum_cercevesi.configure(style="TFrame")
@@ -208,14 +187,11 @@ class OCRGUIUygulamasi:
             self.durum_cubugu.config(text=f"📂 Görüntü yüklendi: {dosya_adi} | Şimdi tanıma dillerini seçip 'Metni Tanı' butonuna tıklayabilirsiniz.")
             
             try:
-                # Unicode uyumlu güvenli resim yükleme
                 self.goruntu = self.ocr.goruntu_oku(dosya_yolu)
                 
-                # Önizleme için orijinal halini gösteriyoruz
                 self.goruntu_goster(self.goruntu)
                 self.metin_alani.delete(1.0, tk.END)
                 
-                # Resmin niteliğine göre durum çubuğunda akıllı öneri sunma
                 h, w = self.goruntu.shape[:2]
                 öneri = ""
                 if "thumbnail" in dosya_adi.lower() or h < 600 or w < 600:
@@ -242,7 +218,6 @@ class OCRGUIUygulamasi:
         if goruntu is None:
             return
         
-        # Tek kanallı (grayscale veya binarize) resimlerin çökmemesi için kontrol
         if len(goruntu.shape) == 2:
             goruntu_rgb = cv2.cvtColor(goruntu, cv2.COLOR_GRAY2RGB)
         else:
@@ -250,7 +225,6 @@ class OCRGUIUygulamasi:
             
         h, w = goruntu_rgb.shape[:2]
         
-        # Ekran boyut sınırları
         max_h = 420
         max_w = 480
         
@@ -263,7 +237,7 @@ class OCRGUIUygulamasi:
         tk_goruntu = ImageTk.PhotoImage(pil_goruntu)
         
         self.goruntu_etiketi.config(image=tk_goruntu)
-        self.goruntu_etiketi.image = tk_goruntu  # Referansın korunması çöpmeyi engeller
+        self.goruntu_etiketi.image = tk_goruntu  
         
     def ocr_uygula(self):
         """Seçilen ön işleme yöntemlerini ve OCR algoritmasını görsel üzerinde çalıştırır."""
@@ -272,7 +246,6 @@ class OCRGUIUygulamasi:
             return
             
         try:
-            # Seçilen dili ve ön işleme modunu çek
             dil = self.dil_secimi.get()
             self.ocr.dil = dil
             
@@ -293,11 +266,9 @@ class OCRGUIUygulamasi:
                 otomatik_duzeltme_uygula=oto_duzelt
             )
             
-            # Metin alanını temizle ve sonucu yaz
             self.metin_alani.delete(1.0, tk.END)
             self.metin_alani.insert(tk.END, metin)
             
-            # Durum çubuğunu güncelle
             karakter_sayisi = len(metin)
             kelime_sayisi = len(metin.split())
             self.durum_cubugu.config(
